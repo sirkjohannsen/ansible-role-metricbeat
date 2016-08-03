@@ -8,7 +8,7 @@ provisioner:
   ansible_verbose: true
   ansible_verbosity: 3
   hosts: localhost
-  roles_path: ../../roles
+  roles_path: test/roles
   require_ansible_repo: true
   ansible_verbose: true
   http_proxy: <%= ENV['HTTP_PROXY'] %>
