@@ -7,4 +7,4 @@ before_script:
 - source <(curl -sL https://raw.githubusercontent.com/zuazo/kitchen-in-travis/0.5.0/scripts/start_docker.sh)
 
 script:
-- travis_retry bundle exec rake integration:docker
+- travis_retry bundle exec kitchen test
