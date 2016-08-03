@@ -79,6 +79,7 @@ metricbeat_config_output: |
 
 metricbeat_config_logging: |
   logging:
+    level: info
     to_files: true
     files:
       path: /var/log/metricbeat
