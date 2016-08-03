@@ -1,0 +1,26 @@
+---
+galaxy_info:
+  author: Sirk Johannsen
+  description: Ansible role for MetricBeat
+  license: Apache
+  min_ansible_version: 2.1
+  platforms:
+    - name: EL
+      versions:
+        - 6
+        - 7
+    - name: Debian
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Amazon Linux
+
+  categories:
+    - ELK
+    - beats
+    - monitoring
+    - system
+
+dependencies: []

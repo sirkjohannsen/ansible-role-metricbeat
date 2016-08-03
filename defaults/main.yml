@@ -1,0 +1,113 @@
+---
+
+# Metricbeat user and group
+#  WARNING: If you run metricbeat with a user other than root make sure
+#  your logs are readable by the metricbeat user. Add the metricbeat user
+#  to a privileged group, with access to your logs (adm)
+metricbeat_user:  root
+metricbeat_group: root
+
+# Create the metricbeat user and group
+metricbeat_create_user: true
+
+# Metricbeat version to use
+# 
+metricbeat_version: 5.0.0-alpha4
+
+# Metricbeat Solaris url
+#
+# metricbeat_solaris_url: {{http://<url_to_your_pkg>/metricbeat-{{ metricbeat_version }}-solaris-amd64.pkg
+
+
+# Start metricbeat at boot time
+#
+metricbeat_start_at_boot: True
+
+# Metricbeat version upgrade
+#  This options allows package upgrades. 
+#  Make sure you know what this implies.
+metricbeat_upgrade: false
+
+metricbeat_config_file: /etc/metricbeat/metricbeat.yml
+
+# Metricbeat configuration
+#  The configuratlion is built based on a single variable, in YAML format, metricbeat_config.
+#  Just for fun and example, it has been splitted into multiple vars:
+#
+#   - metricbeat_config_prospectors
+#   - metricbeat_config_output
+#   - metricbeat_config_shipper
+#   - metricbeat_config_logging
+#
+
+metricbeat_config_modules: |
+  metricbeat.modules:
+    - module: system
+      metricsets:
+        - cpu
+        #- load
+        #- core 
+        - diskio
+        - filesystem
+        #- fsstat
+        - memory
+        - network
+        - process
+      enabled: true
+      period: 10s
+      processes: ['.*']
+      # if true, exports the CPU usage in ticks, together with the percentage values
+      cpu_ticks: false
+
+metricbeat_config_general: |
+  name: {{ ansible_hostname }}
+  # tags: ['tag1','tag2']
+  env: {{ env | default('none') }}
+  fields_under_root: false
+  # ignore_outgoing: true
+  # refresh_topology_freq: 10
+  # topology_expire: 15
+  # queue_size: 1000
+  # max_procs: 
+
+metricbeat_config_processors: |
+  processors:
+
+metricbeat_config_output: |
+  output.elasticsearch:
+    hosts: [ 'localhost:9200' ]
+
+metricbeat_config_logging: |
+  logging:
+    to_files: true
+    files:
+      path: /var/log/metricbeat
+      name: metricbeat.log
+      rotateeverybytes: 10485760 # = 10MB
+      keepfiles: 7
+
+
+metricbeat_config: |
+  {{metricbeat_config_modules}}
+
+  {{metricbeat_config_general}}
+
+  {{metricbeat_config_processors}}
+
+  {{metricbeat_config_output}}
+
+  {{metricbeat_config_logging}}
+
+metricbeat_use_repo: True
+
+# List of template files to copy 
+metricbeat_templates: []
+
+metricbeat_install_default_kibana_dashboards: False
+metricbeat_es_user: "metricbeat"
+metricbeat_es_password: "secret"
+metricbeat_kibana_index: ".kibana"
+metricbeat_es_url: "{{ elasticsearch_proto | default('http') }}://{{ elasticsearch_host | default('localhost:9200') }}"
+
+# vi:ts=2:sw=2:et:ft=yaml
+

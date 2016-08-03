@@ -1,0 +1,65 @@
+---
+driver:
+  name: docker
+  use_sudo: false
+
+provisioner:
+  name: ansible_playbook
+  ansible_verbose: true
+  ansible_verbosity: 3
+  hosts: localhost
+  roles_path: ../../roles
+  require_ansible_repo: true
+  ansible_verbose: true
+  http_proxy: <%= ENV['HTTP_PROXY'] %>
+  https_proxy: <%= ENV['HTTPS_PROXY'] %>
+  no_proxy: localhost,127.0.0.1
+  # chef_bootstrap_url: nil
+
+platforms:
+
+  - name: ubuntu-14.04
+    driver_config:
+      hostname: localhost
+      image: dliappis/ubuntu-devopsci:14.04
+      privileged: true
+      provision_command:
+        - apt-get update && apt-get install -y software-properties-common &&  add-apt-repository -y ppa:ansible/ansible
+        - apt-get update && apt-get -y -q install ansible python-apt python-pycurl openjdk-7-jre
+        - wget https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/deb/elasticsearch/2.3.4/elasticsearch-2.3.4.deb -O /tmp/es.deb
+        -  dpkg -i /tmp/es.deb
+
+#  - name: centos-7
+#    driver_config:
+#      hostname: localhost
+#      image: centos:7
+#      privileged: true
+#      provision_command:
+#        - yum -y upgrade && rpm -i https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+#        - yum -y install ansible python-yum python-pycurl python-pip initscripts systemd dbus
+#        - echo -e "#!/bin/bash\n/sbin/init &\n/usr/sbin/sshd -D -o UseDNS=no -o UsePAM=no -o PasswordAuthentication=yes -o UsePrivilegeSeparation=no -o PidFile=/tmp/sshd.pid" > /tmp/startup.sh
+#        - chmod 755 /tmp/startup.sh
+#      run_command: /tmp/startup.sh
+#      run_options: -e "container=docker"
+#      volume: /sys/fs/cgroup
+
+  - name: centos-6
+    driver_config:
+      hostname: localhost
+      image: centos:6
+      privileged: true
+      provision_command:
+        - yum -y upgrade && rpm -i https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
+        - yum -y install ansible python-yum python-pycurl python-pip initscripts java
+        - yum -y install https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/rpm/elasticsearch/2.3.4/elasticsearch-2.3.4.rpm
+
+suites:
+  - name: default
+    provisioner:
+       playbook: "test/test.yml"
+    run_list:
+    attributes:
+      extra_vars:
+        metricbeat_use_repo: False
+        metricbeat_install_default_kibana_dashboards: True
+        

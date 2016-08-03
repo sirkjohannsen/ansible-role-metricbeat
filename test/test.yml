@@ -1,0 +1,11 @@
+---
+- hosts: localhost
+  remote_user: root
+  pre_tasks:
+    - name: "start elasticsearch"
+      service: 
+        name: "elasticsearch"
+        enabled: yes
+        state: started
+  roles:
+    - metricbeat

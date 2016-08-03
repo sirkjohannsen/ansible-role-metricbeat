@@ -1,0 +1,16 @@
+rvm:
+- 2.3
+
+sudo: true
+
+env:
+  matrix:
+# Split up the test-kitchen run to avoid exceeding 50 minutes:
+  - KITCHEN_REGEXP=centos
+  - KITCHEN_REGEXP=ubuntu
+
+before_script:
+- source <(curl -sL https://raw.githubusercontent.com/zuazo/kitchen-in-travis/0.5.0/scripts/start_docker.sh)
+
+script:
+- travis_retry bundle exec rake integration:docker[$KITCHEN_REGEXP]

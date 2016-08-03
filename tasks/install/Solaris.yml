@@ -1,0 +1,30 @@
+---
+
+- name: metricbeat | Create Solaris log directory and parents
+  file:
+    path: "{{ metricbeat_log_path }}"
+    owner: "{{ metricbeat_user }}"
+    group: "{{ metricbeat_group }}"
+    state: directory
+    recurse: yes
+    mode: 0775
+
+- name: metricbeat | Download Metricbeat agent package
+  get_url:
+    url: "{{ metricbeat_solaris_url }}"
+    dest: "/tmp/metricbeat-{{ metricbeat_version }}.pkg"
+    mode: 0550
+
+- name:  metricbeat | Install Metricbeat agent for Solaris
+  svr4pkg:
+    name: metricbeat
+    src: "/tmp/metricbeat-{{ metricbeat_version }}.pkg"
+    state: present
+
+- name: metricbeat | Install Metricbeat service
+  shell: (svccfg import /opt/metricbeat/etc/metricbeat.xml) && (svcs | grep metricbeat) > /opt/metricbeat/service.created
+  args:
+    creates: /opt/metricbeat/service.created
+  when: metricbeat_start_at_boot
+
+# vi:ts=2:sw=2:et:ft=yaml

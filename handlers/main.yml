@@ -1,0 +1,19 @@
+---
+
+- name: metricbeat start
+  service: name=metricbeat state=started
+  become: yes
+
+- name: metricbeat stop
+  service: name=metricbeat state=stopped
+  become: yes
+
+- name: metricbeat restart
+  service: name=metricbeat state=restarted
+  become: yes
+
+- name: systemctl reload
+  shell: systemctl daemon-reload
+  become: yes
+
+# vi:ts=2:sw=2:et:ft=yaml

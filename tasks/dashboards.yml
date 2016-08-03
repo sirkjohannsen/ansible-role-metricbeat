@@ -1,0 +1,9 @@
+---
+
+- name: Metricbeat default dashboards for Kibana
+  shell: /usr/share/metricbeat/kibana/import_dashboards.sh -u {{ metricbeat_es_user }}:{{ metricbeat_es_password }} -i {{ metricbeat_kibana_index }} -l {{ metricbeat_es_url }} > dashboard_load.log 
+  args:
+    chdir: /usr/share/metricbeat/kibana
+    creates: dashboard_load.log
+
+# vi:ts=2:sw=2:et:ft=yaml

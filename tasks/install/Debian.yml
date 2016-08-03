@@ -1,0 +1,31 @@
+---
+
+- name: Elastic APT Key
+  apt_key: 
+    state=present
+    url="{{metricbeat_apt_key}}"
+
+- name : MetricBeat APT Repository
+  apt_repository:
+    state=present
+    repo="deb {{metricbeat_apt_repository}} stable main"
+    update_cache=yes
+  when: metricbeat_use_repo
+  
+- name: Install MetricBeat (Debian)
+  apt:
+    state="{{ (metricbeat_upgrade) | ternary('latest', 'present') }}"
+    name="{{item}}"
+  with_items: "{{ metricbeat_packages }}"
+  notify: metricbeat restart
+  when: metricbeat_use_repo
+
+- name: Install MetricBeat .deb
+  apt:
+    deb: "{{ metricbeat_baseurl }}/{{ item }}-{{ metricbeat_version }}-amd64.deb"
+    state: present
+  with_items: "{{ metricbeat_packages }}"
+  notify: metricbeat restart
+  when: not metricbeat_use_repo
+
+# vi:ts=2:sw=2:et:ft=yaml

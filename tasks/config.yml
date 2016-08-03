@@ -1,0 +1,14 @@
+---
+
+# FIXME: configuration test would be nice
+
+- name: Metricbeat configuration file
+  template:
+    src=etc/metricbeat/metricbeat.yml.j2
+    dest="{{metricbeat_config_file}}"
+    owner="{{metricbeat_user}}"
+    group="{{metricbeat_group}}"
+    mode=0640
+  notify: metricbeat restart
+
+# vi:ts=2:sw=2:et:ft=yaml

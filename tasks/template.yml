@@ -1,0 +1,13 @@
+---
+
+- name: Metricbeat template file(s)
+  copy:
+    src: "{{ item }}"
+    dest:  "{{ metricbeat_config_file | dirname }}/{{ item | basename }}"
+    owner: "{{ metricbeat_user }}"
+    group: "{{ metricbeat_group }}"
+    mode: 0640
+  with_items: "{{ metricbeat_templates }}"
+  notify: metricbeat restart
+
+# vi:ts=2:sw=2:et:ft=yaml
