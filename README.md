@@ -152,7 +152,7 @@ metricbeat_es_url: "{{ elasticsearch_proto | default('http') }}://{{ elasticsear
 
 ## License
 
-See [License](LICENSE)
+GPLv3
 
 ## Author Information
 
