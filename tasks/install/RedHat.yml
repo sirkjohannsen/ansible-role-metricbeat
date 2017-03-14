@@ -14,7 +14,7 @@
     state="{{ (metricbeat_upgrade) | ternary('latest', 'present') }}"
     name="{{item}}"
     update_cache=yes
-  with_items: metricbeat_packages
+  with_items: "{{ metricbeat_packages }}"
   notify: metricbeat restart
   when: metricbeat_use_repo
 
@@ -31,7 +31,7 @@
     file: path="/etc/init.d/metricbeat" state=absent
 
   - name: Install MetricBeat systemd unit
-    template: 
+    template:
       src: "metricbeat.service.j2"
       dest: "/etc/systemd/system/metricbeat.service"
       owner: "root"
@@ -39,6 +39,6 @@
       mode: 0644
     notify: systemctl reload
   when: "{{ ansible_distribution_major_version|int > 6 }}"
-  
+
 
 # vi:ts=2:sw=2:et:ft=yaml
