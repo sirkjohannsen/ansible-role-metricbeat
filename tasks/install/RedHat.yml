@@ -1,19 +1,21 @@
 ---
 
 - name: MetricBeat Yum Repository
-  copy:
-    dest="/etc/yum.repos.d/metricbeat-{{metricbeat_version}}.repo"
-    content="{{metricbeat_repository}}"
-    owner="root"
-    group="root"
-    mode="0644"
+  yum_repository:
+    name: metricbeat
+    description: Metricbeat repository
+    state: present
+    baseurl: "{{metricbeat_repo_baseurl}}"
+    gpgcheck: "{{metricbeat_repo_gpgcheck}}"
+    gpgkey: "{{metricbeat_repo_gpgkey}}"
+    enabled: true
   when: metricbeat_use_repo
 
 - name: Install MetricBeat (RedHat)
   yum:
-    state="{{ (metricbeat_upgrade) | ternary('latest', 'present') }}"
-    name="{{item}}"
-    update_cache=yes
+    state: "{{ (metricbeat_upgrade) | ternary('latest', 'present') }}"
+    name: "{{item}}"
+    update_cache: yes
   with_items: metricbeat_packages
   notify: metricbeat restart
   when: metricbeat_use_repo
@@ -28,10 +30,12 @@
 
 - block:
   - name: Remove MetricBeat init script
-    file: path="/etc/init.d/metricbeat" state=absent
+    file:
+      path: "/etc/init.d/metricbeat"
+      state: absent
 
   - name: Install MetricBeat systemd unit
-    template: 
+    template:
       src: "metricbeat.service.j2"
       dest: "/etc/systemd/system/metricbeat.service"
       owner: "root"
@@ -39,6 +43,6 @@
       mode: 0644
     notify: systemctl reload
   when: "{{ ansible_distribution_major_version|int > 6 }}"
-  
+
 
 # vi:ts=2:sw=2:et:ft=yaml
