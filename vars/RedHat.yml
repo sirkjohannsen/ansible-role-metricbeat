@@ -6,13 +6,9 @@ metricbeat_v_patch: "{{metricbeat_version|regex_replace('^[0-9]+\\.[0-9]+\\.([0-
 
 metricbeat_repo_version: "{{metricbeat_v_major}}.{{metricbeat_v_minor}}"
 
-metricbeat_repository: |
-  [metricbeat]
-  name=Metricbeat repository
-  baseurl=http://packages.elastic.co/beats/yum/el/$basearch
-  gpgcheck=1
-  gpgkey=http://packages.elastic.co/GPG-KEY-elasticsearch
-  enabled=1
+metricbeat_repo_baseurl: "https://artifacts.elastic.co/packages/5.x/yum"
+metricbeat_repo_gpgcheck: true
+metricbeat_repo_gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
 
 metricbeat_baseurl: "https://download.elastic.co/beats/metricbeat"
 
